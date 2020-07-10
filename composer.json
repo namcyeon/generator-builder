@@ -2,16 +2,7 @@
     "name": "namcyeon/generator-builder",
     "type": "library",
     "description": "Module Laravel Generator GUI Builder",
-    "keywords": [
-        "laravel",
-        "api",
-        "crud",
-        "view",
-        "generator",
-        "builder",
-        "interface",
-        "gui"
-    ],
+    "keywords": [],
     "license": "MIT",
     "authors": [
         {
@@ -25,7 +16,7 @@
     },
     "autoload": {
         "psr-4": {
-            "npdev\\GeneratorBuilder\\": "src/"
+            "namcyeon\\GeneratorBuilder\\": "src/"
         }
     }
 }
