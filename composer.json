@@ -1,7 +1,7 @@
 {
-    "name": "infyomlabs/generator-builder",
+    "name": "namcyeon/generator-builder",
     "type": "library",
-    "description": "InfyOm Laravel Generator GUI Builder",
+    "description": "Module Laravel Generator GUI Builder",
     "keywords": [
         "laravel",
         "api",
@@ -15,8 +15,8 @@
     "license": "MIT",
     "authors": [
         {
-            "name": "Mitul Golakiya",
-            "email": "me@mitul.me"
+            "name": "Nam Pham",
+            "email": ""
         }
     ],
     "require": {
@@ -25,7 +25,7 @@
     },
     "autoload": {
         "psr-4": {
-            "InfyOm\\GeneratorBuilder\\": "src/"
+            "npdev\\GeneratorBuilder\\": "src/"
         }
     }
 }
