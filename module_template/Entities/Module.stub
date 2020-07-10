@@ -13,4 +13,6 @@ class $MODULENAME$ extends BaseModel
     use SoftDeletes;
 
     protected $table = '$TABLENAME$';
+    
+$FOREIGN$    
 }

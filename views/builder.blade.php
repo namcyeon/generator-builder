@@ -34,7 +34,7 @@
     }
 </style>
 <body class="skin-blue" style="background-color: #ecf0f5">
-<div class="col-md-10 col-md-offset-1">
+<div class="col-md-12">
     <section class="content">
         <div id="info" style="display: none"></div>
         <div class="box box-primary col-lg-12">
@@ -48,7 +48,7 @@
                         <label for="txtModuleFolder">Module Folder<span class="required">*</span></label>
                         <input type="text" class="form-control" required id="txtModuleFolder" placeholder="Enter Module folder">
                     </div>
-                    <div class="form-group col-md-3" style="display: none;">
+                    <div class="form-group col-md-3">
                         <label for="txtModuleName">Module Name<span class="required">*</span></label>
                         <input type="text" class="form-control" required id="txtModuleName" placeholder="Enter Module folder">
                     </div>
@@ -79,18 +79,16 @@
                         <table class="table table-striped table-bordered" id="table">
                             <thead class="no-border">
                             <tr>
-                                <th>Field Name</th>
-                                <th width="100">DB Type</th>
-                                <th>Field Label</th>
-                                <th>Html Type</th>
-                                <th>Col</th>
-                                <th style="width: 100px">Required - Position</th>
-                                <th style="width: 80px">Is Foreign</th>
-                                <th style="width: 87px">Searchable</th>
-                                <th style="width: 63px">Fillable</th>
-                                <th style="width: 65px">In Form</th>
-                                <th style="width: 67px">In Index</th>
-                                <th></th>
+                                <th width="15" class="text-left">Field Name</th>
+                                <th width="10" class="text-left">DB Type</th>
+                                <th width="10">Field Label</th>
+                                <th width="15">Html Type</th>
+                                <th width="10">Col</th>
+                                <th width="10" class="text-center">Required</th>
+                                <th width="10" class="text-center">Position</th>
+                                <th width="5" class="text-center">Is Foreign</th>
+                                <th width="5" class="text-center">Data</th>
+                                <th width="5"></th>
                             </tr>
                             </thead>
                             <tbody id="container" class="no-border-x no-border-y ui-sortable">
@@ -357,10 +355,16 @@
                 var relationType = $(item).find('.drdRelationType');
 
                 $(relationType).select2().on('change', function () {
-                    if ($(relationType).val() == "mtm")
+                    if ($(relationType).val() == "mtm") {
                         $(item).find('.foreignTable').show();
-                    else
+                        $(item).find('.foreignTable2').show();
+                        $(item).find('.foreignTable3').show();
+                    }
+                    else {
                         $(item).find('.foreignTable').hide();
+                        $(item).find('.foreignTable2').hide();
+                        $(item).find('.foreignTable3').hide();
+                    }
                 });
 
                 $("#rsContainer").append(item);
@@ -397,7 +401,7 @@
                         type: $(this).find('.drdHtmlType').val(),
                         data: $(this).find('.txtHtmlValue').val(),
                         position: $(this).find('.drdPosition').val(),
-                        foreignTable: $(this).find('.txtForeignTable').val(),
+                        foreignTable: $(this).find('.txtForeignTable').val() + ',' + $(this).find('.txtForeignTable2').val() + ',' + $(this).find('.txtForeignTable3').val(),
                         isForeign: $(this).find('.chkForeign').prop('checked'),
                         searchable: $(this).find('.chkSearchable').prop('checked'),
                         fillable: $(this).find('.chkFillable').prop('checked'),
@@ -633,8 +637,12 @@
             $(el).find(".chkForeign").on("ifChanged", function () {
                 if ($(this).prop('checked') == true) {
                     $(el).find('.foreignTable').show();
+                    $(el).find('.foreignTable2').show();
+                    $(el).find('.foreignTable3').show();
                 } else {
                     $(el).find('.foreignTable').hide();
+                    $(el).find('.foreignTable2').hide();
+                    $(el).find('.foreignTable3').hide();
                 }
             });
 

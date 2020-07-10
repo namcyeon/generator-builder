@@ -13,6 +13,10 @@ use Response;
 
 class GeneratorBuilderController extends Controller
 {
+    public function __construct()
+    {
+    }
+
     public function builder()
     {
         return view(config('namcyeon.generator_builder.views.builder'));
@@ -66,10 +70,12 @@ class GeneratorBuilderController extends Controller
         $MIGRATENAME = str_replace(' ', '', ucwords(str_replace('_', ' ', $data['modelName'])));
         $MODULETITLE = $data['tableName'];
         $MIGRATE = '';
+        $MIGRATEFOREIGN = '';
         $CRUDCOLUMN = '';
         $CRUDVIEWFIELD = '';
         $CRUDVIEWFIELD2 = '';
         $CUSTOMCOLUMN = '';
+        $FOREIGN = '';
         $CRUDTEMPLATE = 'default';
         if (!empty($data['crudTemplate']))
             $CRUDTEMPLATE = $data['crudTemplate'];
@@ -82,7 +88,6 @@ class GeneratorBuilderController extends Controller
             if (empty($field['primary'])) {
                 $field['primary'] = false;
             }
-            $MIGRATE .= "            \$table->string('".$field['name']."');" . PHP_EOL;
 
             $CRUDCOLUMN .= "        \$this->module_column[] = ['data' =>  '".$field['name']."', 'name' => '".$field['name']."', 'title' => '".$field['label']."', 'class' => 'text-left'];" . PHP_EOL;
 
@@ -96,7 +101,7 @@ class GeneratorBuilderController extends Controller
                 "            'class'  => '".$field['col']."'," . PHP_EOL .
                 "            'required' => ".$field['primary']."," . PHP_EOL;
                 if (!empty($field['data']))
-                    $CRUDALL .= "            'data' => ".$field['data'].")," . PHP_EOL;
+                    $CRUDALL .= "            'data' => ".$field['data']."," . PHP_EOL;
                 $CRUDALL .= "            'label' => '".$field['label']."');" . PHP_EOL;
             } else {
                 $CRUDALL .= "        \$this->module_fields[] = array(" . PHP_EOL .
@@ -105,7 +110,7 @@ class GeneratorBuilderController extends Controller
                 "            'class'  => '".$field['col']."'," . PHP_EOL .
                 "            'required' => ".$field['primary']."," . PHP_EOL;
                 if (!empty($field['data']))
-                    $CRUDALL .= "            'data' => ".$field['data'].")," . PHP_EOL;
+                    $CRUDALL .= "            'data' => ".$field['data']."," . PHP_EOL;
                 $CRUDALL .= "            'label' => '".$field['label']."');" . PHP_EOL;
             }
 
@@ -113,11 +118,19 @@ class GeneratorBuilderController extends Controller
                 $CUSTOMCOLUMN .= PHP_EOL . "                        ->editColumn('".$field['name']."', '<img src=\"{{\$".$field['name']."}}\" style=\"width:50px;height:50px;\">')";
             }
             if ($field['type'] == 'toggle-switch') {
-                $CUSTOMCOLUMN .= PHP_EOL . "                        ->editColumn('".$field['name']."', '<label class=\"switch switch-3d switch-primary\"><input type=\"checkbox\" class=\"switch-input\" {{$".$field['name']." ? 'checked' : ''}}><span class=\"switch-label\"></span><span class=\"switch-handle\"></span></label>')";
+                $CUSTOMCOLUMN .= PHP_EOL . "                        ->editColumn('".$field['name']."', '<label class=\"switch switch-3d switch-primary\"><input type=\"checkbox\" class=\"switch-input\" {{\$".$field['name']." ? \'checked\' : \' \'}}><span class=\"switch-label\"></span><span class=\"switch-handle\"></span></label>')";
             }
-            
+            if (!empty($field['foreignTable'])) {
+                $foreighInfo = explode(',', $field['foreignTable']);
+                $FOREIGN .= "    public function " . trim($foreighInfo[0]) . "()" . PHP_EOL .
+                            "    {" . PHP_EOL . "        return \$this->belongsTo('" . trim($foreighInfo[1]) . "');" . PHP_EOL . "    }" . PHP_EOL;
+                //$MIGRATE .= "            \$table->foreign('".$field['name']."')->references('id')->on('".trim($foreighInfo[2])."');" . PHP_EOL;
+                $MIGRATE .= "            \$table->bigInteger('".$field['name']."')->unsigned();" . PHP_EOL;
+                $MIGRATEFOREIGN .= "            \$table->foreign('".$field['name']."')->references('id')->on('".trim($foreighInfo[2])."');";
+            } else {
+                $MIGRATE .= "            \$table->".$field['dbType']."('".$field['name']."');" . PHP_EOL;
+            }
         }
-
         File::makeDirectory($destinationDir, 493, true);
         File::copyDirectory($sourceDir, $destinationDir);
 
@@ -154,6 +167,8 @@ class GeneratorBuilderController extends Controller
             $contentGet = str_replace('$CRUDALL$', $CRUDALL, $contentGet);
             $contentGet = str_replace('$CUSTOMCOLUMN$', $CUSTOMCOLUMN, $contentGet);
             $contentGet = str_replace('$MIGRATENAME$', $MIGRATENAME, $contentGet);
+            $contentGet = str_replace('$FOREIGN$', $FOREIGN, $contentGet);
+            $contentGet = str_replace('$MIGRATEFOREIGN$', $MIGRATEFOREIGN, $contentGet);
             file_put_contents($path, $contentGet);
 
             $newpath = str_replace('ModuleController', $MODULENAME . 'Controller', $path);
