@@ -13,7 +13,7 @@ class GeneratorBuilderRoutesPublisherCommand extends Command
      *
      * @var string
      */
-    protected $name = 'npdev.publish:generator-builder';
+    protected $name = 'namcyeon.publish:generator-builder';
 
     /**
      * The console command description.
@@ -55,7 +55,7 @@ class GeneratorBuilderRoutesPublisherCommand extends Command
     public function publishViews()
     {
         $sourceDir = __DIR__ . "/../../views/";
-        $destinationDir = base_path('resources/views/npdev/generator-builder/');
+        $destinationDir = base_path('resources/views/namcyeon/generator-builder/');
 
         if (file_exists($destinationDir)) {
             $answer = $this->ask('Do you want to overwrite generator-builder? (y|N) :', false);
