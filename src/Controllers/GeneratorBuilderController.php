@@ -1,13 +1,13 @@
 <?php
 
-namespace InfyOm\GeneratorBuilder\Controllers;
+namespace NPDev\GeneratorBuilder\Controllers;
 
 use App\Http\Controllers\Controller;
 use Artisan;
 use File;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
-use InfyOm\GeneratorBuilder\Requests\BuilderGenerateRequest;
+use NPDev\GeneratorBuilder\Requests\BuilderGenerateRequest;
 use Request;
 use Response;
 
@@ -15,17 +15,17 @@ class GeneratorBuilderController extends Controller
 {
     public function builder()
     {
-        return view(config('infyom.generator_builder.views.builder'));
+        return view(config('namcyeon.generator_builder.views.builder'));
     }
     
     public function fieldTemplate()
     {
-        return view(config('infyom.generator_builder.views.field-template'));
+        return view(config('namcyeon.generator_builder.views.field-template'));
     }
 
     public function relationFieldTemplate()
     {
-        return view(config('infyom.generator_builder.views.relation-field-template'));
+        return view(config('namcyeon.generator_builder.views.relation-field-template'));
     }
 
     public function generate(BuilderGenerateRequest $request)

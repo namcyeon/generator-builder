@@ -1,6 +1,6 @@
 <?php
 
-namespace InfyOm\GeneratorBuilder\Requests;
+namespace NPDev\GeneratorBuilder\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Response;
