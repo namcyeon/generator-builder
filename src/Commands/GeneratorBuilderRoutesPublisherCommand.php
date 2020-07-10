@@ -38,7 +38,7 @@ class GeneratorBuilderRoutesPublisherCommand extends Command
 
     private function publishRoutes()
     {
-        $path = config('namcyeon.laravel_generator.path.routes', app_path('Http/routes.php'));
+        $path = config('namcyeon.laravel_generator.path.routes', base_path('Routes/web.php'));
 
         $routeContents = file_get_contents($path);
 
