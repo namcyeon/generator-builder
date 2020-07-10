@@ -1,0 +1,13 @@
+{
+    "name": "$MODULENAME$",
+    "alias": "$LOWERNAME$",
+    "description": "$MODULETITLE$ module",
+    "keywords": ["$LOWERNAME$"],
+    "order": 0,
+    "providers": [
+        "Modules\\$MODULENAME$\\Providers\\$MODULENAME$ServiceProvider"
+    ],
+    "aliases": {},
+    "files": [],
+    "requires": []
+}

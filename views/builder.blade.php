@@ -3,13 +3,13 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>InfyOm Technologies</title>
+    <title>MODULE BUILDER</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.2/css/select2.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.3.2/css/AdminLTE.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/iCheck/1.0.2/skins/all.css">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/select2/4.0.2/css/select2.min.css">
+    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.3.2/css/AdminLTE.min.css">
+    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/iCheck/1.0.2/skins/all.css">
 </head>
 <style>
     .chk-align {
@@ -39,87 +39,36 @@
         <div id="info" style="display: none"></div>
         <div class="box box-primary col-lg-12">
             <div class="box-header" style="margin-top: 10px">
-                <h1 class="box-title" style="font-size: 30px">InfyOm Laravel Generator Builder</h1>
+                <h1 class="box-title" style="font-size: 30px">Module Builder</h1>
             </div>
             <div class="box-body">
                 <form id="form">
                     <input type="hidden" name="_token" id="token" value="{!! csrf_token() !!}"/>
-
-                    <div class="form-group col-md-4">
-                        <label for="txtModelName">Model Name<span class="required">*</span></label>
-                        <input type="text" class="form-control" required id="txtModelName" placeholder="Enter name">
+                    <div class="form-group col-md-3">
+                        <label for="txtModuleFolder">Module Folder<span class="required">*</span></label>
+                        <input type="text" class="form-control" required id="txtModuleFolder" placeholder="Enter Module folder">
                     </div>
-                    <div class="form-group col-md-4">
-                        <label for="drdCommandType">Command Type</label>
-                        <select id="drdCommandType" class="form-control" style="width: 100%">
-                            <option value="infyom:api_scaffold">API Scaffold Generator</option>
-                            <option value="infyom:api">API Generator</option>
-                            <option value="infyom:scaffold">Scaffold Generator</option>
+                    <div class="form-group col-md-3" style="display: none;">
+                        <label for="txtModuleName">Module Name<span class="required">*</span></label>
+                        <input type="text" class="form-control" required id="txtModuleName" placeholder="Enter Module folder">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="txtModelName">Table database<span class="required">*</span></label>
+                        <input type="text" class="form-control" required id="txtModelName" placeholder="Enter Table database">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="txtCustomTblName">Custom Table Name</label>
+                        <input type="text" class="form-control" id="txtCustomTblName" placeholder="Enter module title">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="txtcrudTemplate">Module Template</label>
+                        <select type="text" class="form-control select2" id="txtcrudTemplate" placeholder="Enter module title">
+                            <option value="default">Default</option>
+                            <option value="2_column">2 Column</option>
                         </select>
                     </div>
-                    <div class="form-group col-md-4">
-                        <label for="txtCustomTblName">Custom Table Name</label>
-                        <input type="text" class="form-control" id="txtCustomTblName" placeholder="Enter table name">
-                    </div>
-                    <div class="form-group col-md-8">
-                        <label for="txtModelName">Options</label>
-
-                        <div class="form-inline form-group" style="border-color: transparent">
-                            <div class="checkbox chk-align">
-                                <label>
-                                    <input type="checkbox" class="flat-red" id="chkDelete"><span
-                                            class="chk-label-margin"> Soft Delete </span>
-                                </label>
-                            </div>
-                            <div class="checkbox chk-align">
-                                <label>
-                                    <input type="checkbox" class="flat-red" id="chkSave"> <span
-                                            class="chk-label-margin">Save Schema</span>
-                                </label>
-                            </div>
-                            <div class="checkbox chk-align" id="chSwag">
-                                <label>
-                                    <input type="checkbox" class="flat-red" id="chkSwagger"> <span
-                                            class="chk-label-margin">Swagger</span>
-                                </label>
-                            </div>
-                            <div class="checkbox chk-align" id="chTest">
-                                <label>
-                                    <input type="checkbox" class="flat-red" id="chkTestCases"> <span
-                                            class="chk-label-margin">Test Cases</span>
-                                </label>
-                            </div>
-                            <div class="checkbox chk-align" id="chDataTable">
-                                <label>
-                                    <input type="checkbox" class="flat-red" id="chkDataTable"> <span
-                                            class="chk-label-margin">Datatables</span>
-                                </label>
-                            </div>
-                            <div class="checkbox chk-align" id="chMigration">
-                                <label>
-                                    <input type="checkbox" class="flat-red" id="chkMigration"> <span
-                                            class="chk-label-margin">Migration</span>
-                                </label>
-                            </div>
-                            <div class="checkbox chk-align" id="chForceMigrate">
-                                <label>
-                                    <input type="checkbox" class="flat-red" id="chkForceMigrate"> <span
-                                            class="chk-label-margin">Force Migrate</span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-group col-md-3">
-                        <label for="txtPrefix">Prefix</label>
-                        <input type="text" class="form-control" id="txtPrefix" placeholder="Enter prefix">
-                    </div>
-
-                    <div class="form-group col-md-1">
-                        <label for="txtPaginate">Paginate</label>
-                        <input type="number" class="form-control" value="10" id="txtPaginate" placeholder="">
-                    </div>
-
+                    
+                    
                     <div class="form-group col-md-12" style="margin-top: 7px">
                         <div class="form-control" style="border-color: transparent;padding-left: 0px">
                             <label style="font-size: 18px">Fields</label>
@@ -131,10 +80,11 @@
                             <thead class="no-border">
                             <tr>
                                 <th>Field Name</th>
-                                <th>DB Type</th>
-                                <th>Validations</th>
+                                <th width="100">DB Type</th>
+                                <th>Field Label</th>
                                 <th>Html Type</th>
-                                <th style="width: 68px">Primary</th>
+                                <th>Col</th>
+                                <th style="width: 100px">Required - Position</th>
                                 <th style="width: 80px">Is Foreign</th>
                                 <th style="width: 87px">Searchable</th>
                                 <th style="width: 63px">Fillable</th>
@@ -200,6 +150,23 @@
                                     data-target="#confirm-delete"> Reset
                             </button>
                         </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        Example select:
+                        [
+                        'relation'  => 'tags',
+                        'url'       => route("backend.tags.index_list"),
+                        'text'      => 'name',
+                        'value'     => 'id'
+                        ]
+                        <br>
+                        Example option:
+                        [
+                        '1'=>'Published',
+                        '0'=>'Unpublished',
+                        '2'=>'Draft'
+                        ]
                     </div>
 
 
@@ -295,9 +262,9 @@
                     <div class="form-group col-md-4">
                         <label for="drdSmCommandType">Command Type</label>
                         <select name="commandType" id="drdSmCommandType" class="form-control" style="width: 100%">
-                            <option value="infyom:api_scaffold">API Scaffold Generator</option>
-                            <option value="infyom:api">API Generator</option>
-                            <option value="infyom:scaffold">Scaffold Generator</option>
+                            <option value="namcyeon:api_scaffold">API Scaffold Generator</option>
+                            <option value="namcyeon:api">API Generator</option>
+                            <option value="namcyeon:scaffold">Scaffold Generator</option>
                         </select>
                     </div>
                     <div class="form-inline col-md-12" style="padding:15px 15px;text-align: right">
@@ -312,10 +279,10 @@
     </section>
 </div>
 </body>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.2/js/select2.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/iCheck/1.0.2/icheck.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/select2/4.0.2/js/select2.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/iCheck/1.0.2/icheck.min.js"></script>
 
 <script>
     $("select").select2({width: '100%'});
@@ -328,7 +295,7 @@
         });
 
         $("#drdCommandType").on("change", function () {
-            if ($(this).val() == "infyom:scaffold") {
+            if ($(this).val() == "namcyeon:scaffold") {
                 $('#chSwag').hide();
                 $('#chTest').hide();
             }
@@ -425,6 +392,11 @@
                         dbType: $(this).find('.txtdbType').val(),
                         htmlType: htmlValue,
                         validations: $(this).find('.txtValidation').val(),
+                        label: $(this).find('.txtValidation').val(),
+                        col: $(this).find('.drdHtmlCol').val(),
+                        type: $(this).find('.drdHtmlType').val(),
+                        data: $(this).find('.txtHtmlValue').val(),
+                        position: $(this).find('.drdPosition').val(),
                         foreignTable: $(this).find('.txtForeignTable').val(),
                         isForeign: $(this).find('.chkForeign').prop('checked'),
                         searchable: $(this).find('.chkSearchable').prop('checked'),
@@ -446,21 +418,24 @@
                 });
 
                 var data = {
+                    moduleFolder: $('#txtModuleFolder').val(),
+                    moduleName: $('#txtModuleName').val(),
                     modelName: $('#txtModelName').val(),
-                    commandType: $('#drdCommandType').val(),
+                    commandType: 'namcyeon:craffod',
                     tableName: $('#txtCustomTblName').val(),
-                    migrate: $('#chkMigration').prop('checked'),
+                    crudTemplate: $('#txtcrudTemplate').val(),
+                    migrate: true,
                     options: {
-                        softDelete: $('#chkDelete').prop('checked'),
-                        save: $('#chkSave').prop('checked'),
-                        prefix: $('#txtPrefix').val(),
-                        paginate: $('#txtPaginate').val(),
-                        forceMigrate: $('#chkForceMigrate').prop('checked'),
+                        softDelete: true,
+                        save: true,
+                        prefix: '',
+                        paginate: 10,
+                        forceMigrate: false,
                     },
                     addOns: {
-                        swagger: $('#chkSwagger').prop('checked'),
-                        tests: $('#chkTestCases').prop('checked'),
-                        datatables: $('#chkDataTable').prop('checked')
+                        swagger: false,
+                        tests: false,
+                        datatables: true
                     },
                     fields: fieldArr,
                     relations: relationFieldArr
@@ -485,7 +460,7 @@
                         setTimeout(function () {
                             $('#info').fadeOut('fast');
                         }, 3000);
-                        location.reload();
+                        //location.reload();
                     },
                     error: function (result) {
                         var result = JSON.parse(JSON.stringify(result));
@@ -649,11 +624,11 @@
             });
             $(el).find("select").select2({width: '100%'});
 
-            $(el).find(".chkPrimary").on("ifClicked", function () {
-                $('.chkPrimary').each(function () {
-                    $(this).iCheck('uncheck');
-                });
-            });
+            // $(el).find(".chkPrimary").on("ifClicked", function () {
+            //     $('.chkPrimary').each(function () {
+            //         $(this).iCheck('uncheck');
+            //     });
+            // });
 
             $(el).find(".chkForeign").on("ifChanged", function () {
                 if ($(this).prop('checked') == true) {
@@ -663,18 +638,18 @@
                 }
             });
 
-            $(el).find(".chkPrimary").on("ifChanged", function () {
-                if ($(this).prop('checked') == true) {
-                    $(el).find(".chkSearchable").iCheck('uncheck');
-                    $(el).find(".chkFillable").iCheck('uncheck');
-                    $(el).find(".chkInForm").iCheck('uncheck');
-                }
-            });
+            // $(el).find(".chkPrimary").on("ifChanged", function () {
+            //     if ($(this).prop('checked') == true) {
+            //         $(el).find(".chkSearchable").iCheck('uncheck');
+            //         $(el).find(".chkFillable").iCheck('uncheck');
+            //         $(el).find(".chkInForm").iCheck('uncheck');
+            //     }
+            // });
 
             var htmlType = $(el).find('.drdHtmlType');
 
             $(htmlType).select2().on('change', function () {
-                if ($(htmlType).val() == "select" || $(htmlType).val() == "radio")
+                if ($(htmlType).val() == "select" || $(htmlType).val() == "select_mul" || $(htmlType).val() == "option")
                     $(el).find('.htmlValue').show();
                 else
                     $(el).find('.htmlValue').hide();

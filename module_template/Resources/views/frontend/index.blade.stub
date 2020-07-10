@@ -1,0 +1,10 @@
+@extends('frontend.layouts.app')
+
+@section('title')
+$MODULENAME$
+@stop
+
+
+@section('content')
+
+@endsection

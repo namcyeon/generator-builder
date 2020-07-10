@@ -1,0 +1,16 @@
+<?php
+
+namespace Modules\$MODULENAME$\Entities;
+
+use Carbon\Carbon;
+use App\Models\BaseModel;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use GeneaLabs\LaravelModelCaching\Traits\Cachable;
+
+class $MODULENAME$ extends BaseModel
+{
+    use Cachable;
+    use SoftDeletes;
+
+    protected $table = '$TABLENAME$';
+}

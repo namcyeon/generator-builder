@@ -1,0 +1,27 @@
+{
+    "name": "namcyeon/$LOWERNAME$-module",
+    "description": "$MODULETITLE$",
+    "type": "laravel-module",
+    "version": "v1.0.0",
+    "authors": [
+        {
+            "name": "Nam Pham",
+            "email": "namcyeon@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Modules\\$MODULENAME$\\Providers\\$MODULENAME$ServiceProvider"
+            ],
+            "aliases": {
+
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\$MODULENAME$\\": ""
+        }
+    }
+}

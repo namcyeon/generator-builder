@@ -31,7 +31,8 @@ class GeneratorBuilderController extends Controller
     public function generate(BuilderGenerateRequest $request)
     {
         $data = $request->all();
-
+        $module_path = config('modules.paths.modules');
+        $sourceDir = __DIR__ . "/../../module_template/";
         // Validate fields
         if (isset($data['fields'])) {
             $this->validateFields($data['fields']);
@@ -49,11 +50,126 @@ class GeneratorBuilderController extends Controller
         if (isset($data['fields']) && !empty($data['relations'])) {
             $data = $this->prepareRelationshipData($data);
         }
+        
+        $destinationDir = $module_path .'/' . $data['moduleName'];
 
-        $res = Artisan::call($data['commandType'], [
-            'model'         => $data['modelName'],
-            '--jsonFromGUI' => json_encode($data),
-        ]);
+        // Delete module if exists
+        if(File::exists($destinationDir)) {
+            \Artisan::call('module:delete', [
+                'module' => $data['moduleName']
+            ]);
+        }
+        $MODULEFOLDER = $data['moduleFolder'];
+        $MODULENAME = $data['moduleName'];
+        $LOWERNAME = strtolower($data['moduleName']);
+        $TABLENAME = strtolower($data['modelName']);
+        $MIGRATENAME = str_replace(' ', '', ucwords(str_replace('_', ' ', $data['modelName'])));
+        $MODULETITLE = $data['tableName'];
+        $MIGRATE = '';
+        $CRUDCOLUMN = '';
+        $CRUDVIEWFIELD = '';
+        $CRUDVIEWFIELD2 = '';
+        $CUSTOMCOLUMN = '';
+        $CRUDTEMPLATE = 'default';
+        if (!empty($data['crudTemplate']))
+            $CRUDTEMPLATE = $data['crudTemplate'];
+        $CRUDALL = '';
+        foreach ($data['fields'] as $field) {
+            if (empty($field['label'])) {
+                $field['label'] = ucfirst($field['name']);
+            }
+            $field['primary'] = true;
+            if (empty($field['primary'])) {
+                $field['primary'] = false;
+            }
+            $MIGRATE .= "            \$table->string('".$field['name']."');" . PHP_EOL;
+
+            $CRUDCOLUMN .= "        \$this->module_column[] = ['data' =>  '".$field['name']."', 'name' => '".$field['name']."', 'title' => '".$field['label']."', 'class' => 'text-left'];" . PHP_EOL;
+
+            $CRUDVIEWFIELD .= "'".$field['name']."',";
+            $CRUDVIEWFIELD2 .= "'".$field['name']."',";
+
+            if (!empty($field['position'])) {
+                $CRUDALL .= "        \$this->module_fields['".$field['position']."'][] = array(" . PHP_EOL .
+                "            'name' => '".$field['name']."'," . PHP_EOL .
+                "            'type' => '".$field['type']."'," . PHP_EOL .
+                "            'class'  => '".$field['col']."'," . PHP_EOL .
+                "            'required' => ".$field['primary']."," . PHP_EOL;
+                if (!empty($field['data']))
+                    $CRUDALL .= "            'data' => ".$field['data'].")," . PHP_EOL;
+                $CRUDALL .= "            'label' => '".$field['label']."');" . PHP_EOL;
+            } else {
+                $CRUDALL .= "        \$this->module_fields[] = array(" . PHP_EOL .
+                "            'name' => '".$field['name']."'," . PHP_EOL .
+                "            'type' => '".$field['type']."'," . PHP_EOL .
+                "            'class'  => '".$field['col']."'," . PHP_EOL .
+                "            'required' => ".$field['primary']."," . PHP_EOL;
+                if (!empty($field['data']))
+                    $CRUDALL .= "            'data' => ".$field['data'].")," . PHP_EOL;
+                $CRUDALL .= "            'label' => '".$field['label']."');" . PHP_EOL;
+            }
+
+            if ($field['type'] == 'image') {
+                $CUSTOMCOLUMN .= PHP_EOL . "                        ->editColumn('".$field['name']."', '<img src=\"{{\$".$field['name']."}}\" style=\"width:50px;height:50px;\">')";
+            }
+            if ($field['type'] == 'toggle-switch') {
+                $CUSTOMCOLUMN .= PHP_EOL . "                        ->editColumn('".$field['name']."', '<label class=\"switch switch-3d switch-primary\"><input type=\"checkbox\" class=\"switch-input\" {{$".$field['name']." ? 'checked' : ''}}><span class=\"switch-label\"></span><span class=\"switch-handle\"></span></label>')";
+            }
+            
+        }
+
+        File::makeDirectory($destinationDir, 493, true);
+        File::copyDirectory($sourceDir, $destinationDir);
+
+        $paths = [
+            $destinationDir . "/composer.json",
+            $destinationDir . "/module.json",
+            $destinationDir . "/Routes/web.stub",
+            $destinationDir . "/Routes/api.stub",
+            $destinationDir . "/Resources/views/frontend/index.blade.stub",
+            $destinationDir . "/Providers/ModuleServiceProvider.stub",
+            $destinationDir . "/Providers/RouteServiceProvider.stub",
+            $destinationDir . "/Http/Middleware/GenerateMenus.stub",
+            $destinationDir . "/Http/Controllers/Backend/ModuleController.stub",
+            $destinationDir . "/Http/Controllers/Frontend/ModuleController.stub",
+            $destinationDir . "/Http/Requests/Backend/ModuleRequest.stub",
+            $destinationDir . "/Http/Requests/Frontend/ModuleRequest.stub",
+            $destinationDir . "/Entities/Module.stub",
+            $destinationDir . "/Database/factories/ModuleFactory.stub",
+            $destinationDir . "/Database/Migrations/create_table.stub",
+            $destinationDir . "/Database/Seeders/ModuleDatabaseSeeder.stub",
+            $destinationDir . "/Config/config.stub",
+        ];
+        foreach ($paths as $path) {
+            $contentGet = file_get_contents($path);
+            $contentGet = str_replace('$MODULENAME$', $MODULENAME, $contentGet);
+            $contentGet = str_replace('$LOWERNAME$', $LOWERNAME, $contentGet);
+            $contentGet = str_replace('$TABLENAME$', $TABLENAME, $contentGet);
+            $contentGet = str_replace('$MODULETITLE$', $MODULETITLE, $contentGet);
+            $contentGet = str_replace('$MIGRATE$', $MIGRATE, $contentGet);
+            $contentGet = str_replace('$CRUDVIEWFIELD$', $CRUDVIEWFIELD, $contentGet);
+            $contentGet = str_replace('$CRUDVIEWFIELD2$', $CRUDVIEWFIELD2, $contentGet);
+            $contentGet = str_replace('$CRUDTEMPLATE$', $CRUDTEMPLATE, $contentGet);
+            $contentGet = str_replace('$CRUDCOLUMN$', $CRUDCOLUMN, $contentGet);
+            $contentGet = str_replace('$CRUDALL$', $CRUDALL, $contentGet);
+            $contentGet = str_replace('$CUSTOMCOLUMN$', $CUSTOMCOLUMN, $contentGet);
+            $contentGet = str_replace('$MIGRATENAME$', $MIGRATENAME, $contentGet);
+            file_put_contents($path, $contentGet);
+
+            $newpath = str_replace('ModuleController', $MODULENAME . 'Controller', $path);
+            $newpath = str_replace('ModuleRequest', $MODULENAME . 'Request', $newpath);
+            $newpath = str_replace('Module.stub', $MODULENAME . '.stub', $newpath);
+            $newpath = str_replace('ModuleServiceProvider', $MODULENAME . 'ServiceProvider', $newpath);
+            $newpath = str_replace('ModuleFactory', $MODULENAME . 'Factory', $newpath);
+            $newpath = str_replace('ModuleDatabaseSeeder', $MODULENAME . 'DatabaseSeeder', $newpath);
+            $newpath = str_replace('create_table.stub', date('Y').'_'.date('m').'_'.date('d').'_062135_create_' . $TABLENAME . '_table.stub', $newpath);
+            $newpath = str_replace('.stub', '.php', $newpath);
+            File::move($path, $newpath);
+        }
+        // $res = Artisan::call($data['commandType'], [
+        //     'model'         => $data['modelName'],
+        //     '--jsonFromGUI' => json_encode($data),
+        // ]);
 
         return Response::json("Files created successfully");
     }
@@ -70,7 +186,7 @@ class GeneratorBuilderController extends Controller
             $input['--prefix'] = $data['prefix'];
         }
 
-        Artisan::call('infyom:rollback', $input);
+        Artisan::call('namcyeon:rollback', $input);
 
         return Response::json(['message' => 'Files rollback successfully'], 200);
     }

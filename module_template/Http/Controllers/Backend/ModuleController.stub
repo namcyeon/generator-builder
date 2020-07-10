@@ -1,0 +1,131 @@
+<?php
+
+namespace Modules\$MODULENAME$\Http\Controllers\Backend;
+
+use Auth;
+use Flash;
+use Log;
+use Carbon\Carbon;
+use App\Authorizable;
+use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Yajra\DataTables\DataTables;
+use Illuminate\Support\Facades\Storage;
+use App\Http\Controllers\CrudController;
+use Modules\$MODULENAME$\Http\Requests\Backend\$MODULENAME$Request;
+
+class $MODULENAME$Controller extends CrudController
+{
+    use Authorizable;
+
+    public function __construct()
+    {
+        // Page Title
+        $this->module_title = '$MODULETITLE$';
+
+        // Module name
+        $this->module_name = '$LOWERNAME$';
+
+        // Directory path of the module
+        $this->module_path = '$LOWERNAME$';
+
+        // Module icon
+        $this->module_icon = 'fas fa-sitemap';
+
+        // Module model name, path
+        $this->module_model = "Modules\$MODULENAME$\Entities\$MODULENAME$";
+
+        $this->module_view = "$LOWERNAME$";
+    }
+
+    private function column() {
+        $this->module_column = array();
+        $this->module_column[] = ['data' =>  'id', 'name' => 'id', 'title' => 'ID', 'class' => 'text-left'];
+$CRUDCOLUMN$
+        $this->module_column[] = ['data' =>  'updated_at', 'name' => 'updated_at', 'title' => 'Updated at', 'class' => 'text-left'];
+        $this->module_column[] = ['data' =>  'action', 'name' => 'action', 'title' => 'Action', 'class' => 'text-center', 'orderable' => false, 'searchable' => false, 'width' => 100];
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return Response
+     */
+    public function index()
+    {
+        $this->column();
+        return $this->index_crud();
+    }
+
+    public function trashed()
+    {
+        $this->column();
+        return $this->trashed_crud();
+    }
+
+    /**
+     * Select Options for Select 2 Request/ Response.
+     *
+     * @return Response
+     */
+    public function index_list(Request $request)
+    {
+        $term = trim($request->q);
+        $wheres = array();
+        $wheres[] = ['name', 'LIKE', "%$term%"];
+        return $this->index_list_crud($request, $wheres);
+    }
+
+    public function index_data()
+    {
+        return $this->index_data_crud(['id', $CRUDVIEWFIELD$ 'updated_at'], ['id', $CRUDVIEWFIELD2$])
+                        ->editColumn('name', '<strong>{{$name}}</strong>')$CUSTOMCOLUMN$
+                        ->orderColumns(['id'], '-:column $1')
+                        ->make(true);
+    }
+
+    private function fields()
+    {
+        $this->module_fields = array();
+        $this->module_template = '$CRUDTEMPLATE$';
+$CRUDALL$
+    }
+
+    public function create()
+    {
+        $this->fields();
+        return $this->create_crud();
+    }
+
+    public function edit($id)
+    {
+        $this->fields();
+        return $this->edit_crud($id);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function store($MODULENAME$Request $request)
+    {
+        return $this->store_crud($request);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param Request $request
+     * @param int     $id
+     *
+     * @return Response
+     */
+    public function update($MODULENAME$Request $request, $id)
+    {
+        return $this->update_crud($request, $id);
+    }
+}

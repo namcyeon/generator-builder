@@ -1,0 +1,33 @@
+<?php
+
+namespace Modules\$MODULENAME$\Http\Controllers\Frontend;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Response;
+use Illuminate\Support\Str;
+
+class $MODULENAME$Controller extends Controller
+{
+    public function __construct()
+    {
+        // Page Title
+        $this->module_title = '$MODULETITLE$';
+
+        // Module name
+        $this->module_name = '$LOWERNAME$';
+
+        // Directory path of the module
+        $this->module_path = '$LOWERNAME$';
+
+        // Module icon
+        $this->module_icon = 'fas fa-$LOWERNAME$';
+
+        // Module model name, path
+        $this->module_model = "Modules\$MODULENAME$\Entities\$MODULENAME$";
+    }
+
+    public function index()
+    {
+
+    }
+}
