@@ -1,6 +1,6 @@
 <?php
 
-namespace NPDev\GeneratorBuilder\Requests;
+namespace namcyeon\GeneratorBuilder\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Response;

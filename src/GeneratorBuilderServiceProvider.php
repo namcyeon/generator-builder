@@ -1,9 +1,9 @@
 <?php
 
-namespace NPDev\GeneratorBuilder;
+namespace namcyeon\GeneratorBuilder;
 
 use Illuminate\Support\ServiceProvider;
-use NPDev\GeneratorBuilder\Commands\GeneratorBuilderRoutesPublisherCommand;
+use namcyeon\GeneratorBuilder\Commands\GeneratorBuilderRoutesPublisherCommand;
 
 class GeneratorBuilderServiceProvider extends ServiceProvider
 {

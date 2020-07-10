@@ -1,14 +1,14 @@
-Route::get('generator_builder', '\NPDev\GeneratorBuilder\Controllers\GeneratorBuilderController@builder')->name('io_generator_builder');
+Route::get('generator_builder', '\namcyeon\GeneratorBuilder\Controllers\GeneratorBuilderController@builder')->name('io_generator_builder');
 
-Route::get('field_template', '\NPDev\GeneratorBuilder\Controllers\GeneratorBuilderController@fieldTemplate')->name('io_field_template');
+Route::get('field_template', '\namcyeon\GeneratorBuilder\Controllers\GeneratorBuilderController@fieldTemplate')->name('io_field_template');
 
-Route::get('relation_field_template', '\NPDev\GeneratorBuilder\Controllers\GeneratorBuilderController@relationFieldTemplate')->name('io_relation_field_template');
+Route::get('relation_field_template', '\namcyeon\GeneratorBuilder\Controllers\GeneratorBuilderController@relationFieldTemplate')->name('io_relation_field_template');
 
-Route::post('generator_builder/generate', '\NPDev\GeneratorBuilder\Controllers\GeneratorBuilderController@generate')->name('io_generator_builder_generate');
+Route::post('generator_builder/generate', '\namcyeon\GeneratorBuilder\Controllers\GeneratorBuilderController@generate')->name('io_generator_builder_generate');
 
-Route::post('generator_builder/rollback', '\NPDev\GeneratorBuilder\Controllers\GeneratorBuilderController@rollback')->name('io_generator_builder_rollback');
+Route::post('generator_builder/rollback', '\namcyeon\GeneratorBuilder\Controllers\GeneratorBuilderController@rollback')->name('io_generator_builder_rollback');
 
 Route::post(
     'generator_builder/generate-from-file',
-    '\NPDev\GeneratorBuilder\Controllers\GeneratorBuilderController@generateFromFile'
+    '\namcyeon\GeneratorBuilder\Controllers\GeneratorBuilderController@generateFromFile'
 )->name('io_generator_builder_generate_from_file');

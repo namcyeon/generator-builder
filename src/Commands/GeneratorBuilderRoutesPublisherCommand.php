@@ -1,6 +1,6 @@
 <?php
 
-namespace NPDev\GeneratorBuilder\Commands;
+namespace namcyeon\GeneratorBuilder\Commands;
 
 use File;
 use Illuminate\Console\Command;

@@ -1,13 +1,13 @@
 <?php
 
-namespace NPDev\GeneratorBuilder\Controllers;
+namespace namcyeon\GeneratorBuilder\Controllers;
 
 use App\Http\Controllers\Controller;
 use Artisan;
 use File;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
-use NPDev\GeneratorBuilder\Requests\BuilderGenerateRequest;
+use namcyeon\GeneratorBuilder\Requests\BuilderGenerateRequest;
 use Request;
 use Response;
 
