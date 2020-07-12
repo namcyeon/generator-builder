@@ -147,7 +147,7 @@ class GeneratorBuilderController extends Controller
             $destinationDir . "/Http/Controllers/Frontend/ModuleController.stub",
             $destinationDir . "/Http/Requests/Backend/ModuleRequest.stub",
             $destinationDir . "/Http/Requests/Frontend/ModuleRequest.stub",
-            $destinationDir . "/Entities/Module.stub",
+            $destinationDir . "/Models/Module.stub",
             $destinationDir . "/Database/factories/ModuleFactory.stub",
             $destinationDir . "/Database/Migrations/create_table.stub",
             $destinationDir . "/Database/Seeders/ModuleDatabaseSeeder.stub",

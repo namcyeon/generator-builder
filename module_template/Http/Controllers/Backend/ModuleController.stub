@@ -6,19 +6,27 @@ use Auth;
 use Flash;
 use Log;
 use Carbon\Carbon;
-use App\Authorizable;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\CrudController;
 use Modules\$MODULENAME$\Http\Requests\Backend\$MODULENAME$Request;
 
 class $MODULENAME$Controller extends CrudController
 {
-    use Authorizable;
+    /*
+    |--------------------------------------------------------------------------
+    | $MODULENAME$ Controller
+    |--------------------------------------------------------------------------
+    |
+    */
 
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
     public function __construct()
     {
         // Page Title
@@ -34,11 +42,16 @@ class $MODULENAME$Controller extends CrudController
         $this->module_icon = 'fas fa-sitemap';
 
         // Module model name, path
-        $this->module_model = "Modules\$MODULENAME$\Entities\$MODULENAME$";
+        $this->module_model = "Modules\$MODULENAME$\Models\$MODULENAME$";
 
+        // Module view path
         $this->module_view = "$LOWERNAME$";
     }
 
+    /**
+     * Create column for Datatable
+     *
+     */
     private function column() {
         $this->module_column = array();
         $this->module_column[] = ['data' =>  'id', 'name' => 'id', 'title' => 'ID', 'class' => 'text-left'];
@@ -50,7 +63,7 @@ $CRUDCOLUMN$
     /**
      * Display a listing of the resource.
      *
-     * @return Response
+     * @return \Illuminate\View\View
      */
     public function index()
     {
@@ -58,6 +71,12 @@ $CRUDCOLUMN$
         return $this->index_crud();
     }
 
+    /**
+     * List of trashed ertries
+     * works if the softdelete is enabled.
+     *
+     * @return \Illuminate\View\View
+     */
     public function trashed()
     {
         $this->column();
@@ -67,7 +86,7 @@ $CRUDCOLUMN$
     /**
      * Select Options for Select 2 Request/ Response.
      *
-     * @return Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index_list(Request $request)
     {
@@ -77,6 +96,11 @@ $CRUDCOLUMN$
         return $this->index_list_crud($request, $wheres);
     }
 
+    /**
+     * return Datatable data
+     *
+     * @return \Yajra\DataTables\DataTables
+     */
     public function index_data()
     {
         return $this->index_data_crud(['id', $CRUDVIEWFIELD$ 'updated_at'], ['id', $CRUDVIEWFIELD2$])
@@ -85,6 +109,10 @@ $CRUDCOLUMN$
                         ->make(true);
     }
 
+    /**
+     * Field for Crud create and edit
+     *
+     */
     private function fields()
     {
         $this->module_fields = array();
@@ -92,12 +120,22 @@ $CRUDCOLUMN$
 $CRUDALL$
     }
 
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\View\View
+     */
     public function create()
     {
         $this->fields();
         return $this->create_crud();
     }
 
+    /**
+     * Show the form for updateing a resource.
+     *
+     * @return \Illuminate\View\View
+     */
     public function edit($id)
     {
         $this->fields();
@@ -107,9 +145,9 @@ $CRUDALL$
     /**
      * Store a newly created resource in storage.
      *
-     * @param Request $request
+     * @param $MODULENAME$Request $request
      *
-     * @return Response
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store($MODULENAME$Request $request)
     {
@@ -119,10 +157,9 @@ $CRUDALL$
     /**
      * Update the specified resource in storage.
      *
-     * @param Request $request
-     * @param int     $id
+     * @param $MODULENAME$Request $request
      *
-     * @return Response
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function update($MODULENAME$Request $request, $id)
     {

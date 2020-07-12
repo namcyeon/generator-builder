@@ -4,7 +4,7 @@ namespace Modules\$MODULENAME$\Database\Seeders;
 
 use DB;
 use Illuminate\Database\Seeder;
-use Modules\$MODULENAME$\Entities\$MODULENAME$;
+use Modules\$MODULENAME$\Models\$MODULENAME$;
 
 class $MODULENAME$DatabaseSeeder extends Seeder
 {

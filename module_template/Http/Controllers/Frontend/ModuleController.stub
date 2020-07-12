@@ -23,7 +23,7 @@ class $MODULENAME$Controller extends Controller
         $this->module_icon = 'fas fa-$LOWERNAME$';
 
         // Module model name, path
-        $this->module_model = "Modules\$MODULENAME$\Entities\$MODULENAME$";
+        $this->module_model = "Modules\$MODULENAME$\Models\$MODULENAME$";
     }
 
     public function index()
