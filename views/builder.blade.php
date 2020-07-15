@@ -67,6 +67,21 @@
                             <option value="2_column">2 Column</option>
                         </select>
                     </div>
+                    <div class="form-group col-md-3">
+                        <label for="txtcrudSlug">Module Slug - Seo</label>
+                        <select type="text" class="form-control select2" id="txtcrudSlug" placeholder="Enter module title">
+                            <option value="false" selected>No</option>
+                            <option value="true">Yes</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="txtcrudLang">Module Lang</label>
+                        <select type="text" class="form-control select2" id="txtcrudLang" placeholder="Enter module title">
+                            <option value="false" selected>No</option>
+                            <option value="true">Yes</option>
+                        </select>
+                    </div>
+
                     
                     
                     <div class="form-group col-md-12" style="margin-top: 7px">
@@ -404,6 +419,7 @@
                         foreignTable: $(this).find('.txtForeignTable').val() + ',' + $(this).find('.txtForeignTable2').val() + ',' + $(this).find('.txtForeignTable3').val(),
                         isForeign: $(this).find('.chkForeign').prop('checked'),
                         searchable: $(this).find('.chkSearchable').prop('checked'),
+                        multilang: $(this).find('.chkMultilang').prop('checked'),
                         fillable: $(this).find('.chkFillable').prop('checked'),
                         primary: $(this).find('.chkPrimary').prop('checked'),
                         inForm: $(this).find('.chkInForm').prop('checked'),
@@ -428,6 +444,8 @@
                     commandType: 'namcyeon:craffod',
                     tableName: $('#txtCustomTblName').val(),
                     crudTemplate: $('#txtcrudTemplate').val(),
+                    crudSlug: $('#txtcrudSlug').val(),
+                    crudLang: $('#txtcrudLang').val(),
                     migrate: true,
                     options: {
                         softDelete: true,

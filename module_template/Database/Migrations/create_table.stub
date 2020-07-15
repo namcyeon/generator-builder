@@ -27,6 +27,7 @@ $MIGRATE$
         Schema::table('$TABLENAME$', function (Blueprint $table) {
 $MIGRATEFOREIGN$
         });
+$MIGRATETRANSLATE$
     }
 
     /**
@@ -36,6 +37,7 @@ $MIGRATEFOREIGN$
      */
     public function down()
     {
+$DOWNMIGRATETRANSLATE$
         Schema::dropIfExists('$TABLENAME$');
     }
 }

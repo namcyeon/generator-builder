@@ -1,0 +1,13 @@
+<?php
+namespace Modules\$MODULENAME$\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class $MODULENAME$Translation extends Model
+{
+    public $timestamps = false;
+
+    protected $table = '$LOWERNAME$_translations';
+
+    protected $fillable = [$TRANSLATIONFIELD$];
+}

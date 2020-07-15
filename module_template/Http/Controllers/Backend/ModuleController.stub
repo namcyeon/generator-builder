@@ -46,6 +46,12 @@ class $MODULENAME$Controller extends CrudController
 
         // Module view path
         $this->module_view = "$LOWERNAME$";
+
+        // Module slug
+        $this->module_seo = $SLUGABLE$;
+
+        // Module slug
+        $this->module_multilang = $MULTILANG$;
     }
 
     /**
@@ -54,10 +60,10 @@ class $MODULENAME$Controller extends CrudController
      */
     private function column() {
         $this->module_column = array();
-        $this->module_column[] = ['data' =>  'id', 'name' => 'id', 'title' => 'ID', 'class' => 'text-left'];
+        $this->module_column[] = ['data' =>  'id', 'name' => '$TABLENAME$.id', 'trash' => 'id', 'title' => 'ID', 'class' => 'text-left'];
 $CRUDCOLUMN$
-        $this->module_column[] = ['data' =>  'updated_at', 'name' => 'updated_at', 'title' => 'Updated at', 'class' => 'text-left'];
-        $this->module_column[] = ['data' =>  'action', 'name' => 'action', 'title' => 'Action', 'class' => 'text-center', 'orderable' => false, 'searchable' => false, 'width' => 100];
+        $this->module_column[] = ['data' =>  'updated_at', 'name' => '$TABLENAME$.updated_at', 'trash' => 'updated_at', 'title' => 'Updated at', 'class' => 'text-left', 'searchable' => false];
+        $this->module_column[] = ['data' =>  'action', 'name' => 'action', 'trash' => 'action', 'title' => 'Action', 'class' => 'text-center', 'orderable' => false, 'searchable' => false, 'width' => 100];
     }
 
     /**
@@ -103,8 +109,8 @@ $CRUDCOLUMN$
      */
     public function index_data()
     {
-        return $this->index_data_crud(['id', $CRUDVIEWFIELD$ 'updated_at'], ['id', $CRUDVIEWFIELD2$])
-                        ->editColumn('name', '<strong>{{$name}}</strong>')$CUSTOMCOLUMN$
+        return $this->index_data_crud([$CRUDVIEWFIELD$], ['id', $CRUDVIEWFIELD2$])
+                        $CUSTOMCOLUMN$
                         ->orderColumns(['id'], '-:column $1')
                         ->make(true);
     }

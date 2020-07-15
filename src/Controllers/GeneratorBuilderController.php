@@ -69,17 +69,23 @@ class GeneratorBuilderController extends Controller
         $TABLENAME = strtolower($data['modelName']);
         $MIGRATENAME = str_replace(' ', '', ucwords(str_replace('_', ' ', $data['modelName'])));
         $MODULETITLE = $data['tableName'];
+        $SLUGABLE = $data['crudSlug'];
+        $MULTILANG = $data['crudLang'];
         $MIGRATE = '';
         $MIGRATEFOREIGN = '';
+        $MIGRATETRANSLATE = '';
+        $DOWNMIGRATETRANSLATE = '';
         $CRUDCOLUMN = '';
         $CRUDVIEWFIELD = '';
         $CRUDVIEWFIELD2 = '';
         $CUSTOMCOLUMN = '';
         $FOREIGN = '';
+        $TRANSLATIONFIELD = '';
         $CRUDTEMPLATE = 'default';
         if (!empty($data['crudTemplate']))
             $CRUDTEMPLATE = $data['crudTemplate'];
         $CRUDALL = '';
+        $CRUDVIEWFIELD .= "'".$TABLENAME.".*'";
         foreach ($data['fields'] as $field) {
             if (empty($field['label'])) {
                 $field['label'] = ucfirst($field['name']);
@@ -89,9 +95,8 @@ class GeneratorBuilderController extends Controller
                 $field['primary'] = false;
             }
 
-            $CRUDCOLUMN .= "        \$this->module_column[] = ['data' =>  '".$field['name']."', 'name' => '".$field['name']."', 'title' => '".$field['label']."', 'class' => 'text-left'];" . PHP_EOL;
+            $CRUDCOLUMN .= "        \$this->module_column[] = ['data' =>  '".$field['name']."', 'name' => '".$TABLENAME.'.'.$field['name']."', 'trash' => '".$field['name']."', 'title' => '".$field['label']."', 'class' => 'text-left', 'searchable' => true];" . PHP_EOL;
 
-            $CRUDVIEWFIELD .= "'".$field['name']."',";
             $CRUDVIEWFIELD2 .= "'".$field['name']."',";
 
             if (!empty($field['position'])) {
@@ -100,27 +105,26 @@ class GeneratorBuilderController extends Controller
                 "            'type' => '".$field['type']."'," . PHP_EOL .
                 "            'class'  => '".$field['col']."'," . PHP_EOL .
                 "            'required' => ".$field['primary']."," . PHP_EOL;
-                if (!empty($field['data']))
-                    $CRUDALL .= "            'data' => ".$field['data']."," . PHP_EOL;
-                $CRUDALL .= "            'label' => '".$field['label']."');" . PHP_EOL;
             } else {
                 $CRUDALL .= "        \$this->module_fields[] = array(" . PHP_EOL .
                 "            'name' => '".$field['name']."'," . PHP_EOL .
                 "            'type' => '".$field['type']."'," . PHP_EOL .
                 "            'class'  => '".$field['col']."'," . PHP_EOL .
                 "            'required' => ".$field['primary']."," . PHP_EOL;
-                if (!empty($field['data']))
-                    $CRUDALL .= "            'data' => ".$field['data']."," . PHP_EOL;
-                $CRUDALL .= "            'label' => '".$field['label']."');" . PHP_EOL;
             }
+
+            if (!empty($field['data']))
+                $CRUDALL .= "            'data' => ".$field['data']."," . PHP_EOL;
+            if (!empty($field['multilang']))
+                $CRUDALL .= "            'multilang' => 1," . PHP_EOL;
+            $CRUDALL .= "            'label' => '".$field['label']."');" . PHP_EOL;
 
             if ($field['type'] == 'image') {
                 $CUSTOMCOLUMN .= PHP_EOL . "                        ->editColumn('".$field['name']."', '<img src=\"{{\$".$field['name']."}}\" style=\"width:50px;height:50px;\">')";
-            }
-            if ($field['type'] == 'toggle-switch') {
+            } else if ($field['type'] == 'toggle-switch') {
                 $CUSTOMCOLUMN .= PHP_EOL . "                        ->editColumn('".$field['name']."', '<label class=\"switch switch-3d switch-primary\"><input type=\"checkbox\" class=\"switch-input\" {{\$".$field['name']." ? \'checked\' : \' \'}}><span class=\"switch-label\"></span><span class=\"switch-handle\"></span></label>')";
             }
-            if (!empty($field['foreignTable'])) {
+            if (!empty($field['foreignTable']) && $field['foreignTable'] != ',,') {
                 $foreighInfo = explode(',', $field['foreignTable']);
                 $FOREIGN .= "    public function " . trim($foreighInfo[0]) . "()" . PHP_EOL .
                             "    {" . PHP_EOL . "        return \$this->belongsTo('" . trim($foreighInfo[1]) . "');" . PHP_EOL . "    }" . PHP_EOL;
@@ -128,8 +132,36 @@ class GeneratorBuilderController extends Controller
                 $MIGRATE .= "            \$table->bigInteger('".$field['name']."')->unsigned();" . PHP_EOL;
                 $MIGRATEFOREIGN .= "            \$table->foreign('".$field['name']."')->references('id')->on('".trim($foreighInfo[2])."');";
             } else {
-                $MIGRATE .= "            \$table->".$field['dbType']."('".$field['name']."');" . PHP_EOL;
+                if (!empty($field['multilang'])) {
+                    $TRANSLATIONFIELD .= "'".$field['name']."',";
+                    
+                    if ($MIGRATETRANSLATE == '') {
+                        $MIGRATETRANSLATE .= "        Schema::create('".$LOWERNAME."_translations', function(Blueprint \$table) {".PHP_EOL;
+                    }
+                    $MIGRATETRANSLATE .= "            \$table->".$field['dbType']."('".$field['name']."');" . PHP_EOL;
+                    $CUSTOMCOLUMN .= PHP_EOL . "                        ->editColumn('".$field['name']."', function (\$data) {
+                            return ''";
+                    foreach (language_list() as $lang) {
+                        $CUSTOMCOLUMN .= ".'<span class=\"badge badge-primary\">".strtoupper($lang['key'])."</span> ' . \$data->translate('".$lang['key']."')->".$field['name'].".'<br>'";
+                    }
+                    $CUSTOMCOLUMN .= ";".PHP_EOL."                        })";
+                } else {
+                    $MIGRATE .= "            \$table->".$field['dbType']."('".$field['name']."');" . PHP_EOL;
+                }
             }
+        }
+        if ($MIGRATETRANSLATE != '') {
+            $MIGRATETRANSLATE .= "            \$table->string('locale')->index();".PHP_EOL.
+            "            \$table->bigIncrements('id')->unsigned();".PHP_EOL.
+            "            \$table->bigInteger('".$LOWERNAME."_id')->unsigned();".PHP_EOL.
+            "            \$table->unique(['".$LOWERNAME."_id', 'locale']);".PHP_EOL.
+            "            \$table->timestamps();".PHP_EOL.
+            "            \$table->softDeletes();".PHP_EOL.
+            "        });".PHP_EOL.
+            "        Schema::table('".$LOWERNAME."_translations', function (Blueprint \$table) {".PHP_EOL.
+            "            \$table->foreign('".$LOWERNAME."_id')->references('id')->on('".$TABLENAME."')->onDelete('cascade');".PHP_EOL.
+            "        });";
+            $DOWNMIGRATETRANSLATE .= "        Schema::dropIfExists('".$LOWERNAME."_translations');";
         }
         File::makeDirectory($destinationDir, 493, true);
         File::copyDirectory($sourceDir, $destinationDir);
@@ -147,12 +179,23 @@ class GeneratorBuilderController extends Controller
             $destinationDir . "/Http/Controllers/Frontend/ModuleController.stub",
             $destinationDir . "/Http/Requests/Backend/ModuleRequest.stub",
             $destinationDir . "/Http/Requests/Frontend/ModuleRequest.stub",
-            $destinationDir . "/Models/Module.stub",
             $destinationDir . "/Database/factories/ModuleFactory.stub",
             $destinationDir . "/Database/Migrations/create_table.stub",
             $destinationDir . "/Database/Seeders/ModuleDatabaseSeeder.stub",
             $destinationDir . "/Config/config.stub",
         ];
+        if ($MIGRATETRANSLATE != '') {
+            array_push($paths, $destinationDir . "/Models/ModuleTranslation.stub");
+        } else {
+            File::delete($destinationDir . "/Models/ModuleTranslation.stub");
+        }
+        if ($MULTILANG != '') {
+            array_push($paths, $destinationDir . "/Models/ModuleLang.stub");
+            File::delete($destinationDir . "/Models/Module.stub");
+        } else {
+            array_push($paths, $destinationDir . "/Models/Module.stub");
+            File::delete($destinationDir . "/Models/ModuleLang.stub");
+        }
         foreach ($paths as $path) {
             $contentGet = file_get_contents($path);
             $contentGet = str_replace('$MODULENAME$', $MODULENAME, $contentGet);
@@ -169,11 +212,18 @@ class GeneratorBuilderController extends Controller
             $contentGet = str_replace('$MIGRATENAME$', $MIGRATENAME, $contentGet);
             $contentGet = str_replace('$FOREIGN$', $FOREIGN, $contentGet);
             $contentGet = str_replace('$MIGRATEFOREIGN$', $MIGRATEFOREIGN, $contentGet);
+            $contentGet = str_replace('$SLUGABLE$', $SLUGABLE, $contentGet);
+            $contentGet = str_replace('$MIGRATETRANSLATE$', $MIGRATETRANSLATE, $contentGet);
+            $contentGet = str_replace('$DOWNMIGRATETRANSLATE$', $DOWNMIGRATETRANSLATE, $contentGet);
+            $contentGet = str_replace('$MULTILANG$', $MULTILANG, $contentGet);
+            $contentGet = str_replace('$TRANSLATIONFIELD$', $TRANSLATIONFIELD, $contentGet);
             file_put_contents($path, $contentGet);
 
             $newpath = str_replace('ModuleController', $MODULENAME . 'Controller', $path);
             $newpath = str_replace('ModuleRequest', $MODULENAME . 'Request', $newpath);
             $newpath = str_replace('Module.stub', $MODULENAME . '.stub', $newpath);
+            $newpath = str_replace('ModuleLang.stub', $MODULENAME . '.stub', $newpath);
+            $newpath = str_replace('ModuleTranslation', $MODULENAME . 'Translation', $newpath);
             $newpath = str_replace('ModuleServiceProvider', $MODULENAME . 'ServiceProvider', $newpath);
             $newpath = str_replace('ModuleFactory', $MODULENAME . 'Factory', $newpath);
             $newpath = str_replace('ModuleDatabaseSeeder', $MODULENAME . 'DatabaseSeeder', $newpath);
